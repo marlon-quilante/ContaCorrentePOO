@@ -26,6 +26,8 @@ namespace ContaCorrentePOO
                             break;
                         break;
                     case 3:
+                        if (DepositoRealizado(listaContas, valor))
+                            break;
                         break;
                     case 4:
                         break;
@@ -100,7 +102,7 @@ namespace ContaCorrentePOO
                     valor = DefinirValor();
                     if (conta.SaquePermitido(valor))
                     {
-                        conta.Saque(valor, conta);
+                        conta.Sacar(valor, conta);
                         Console.WriteLine($"\nSaque no valor de R$ {valor.ToString("F2")} realizado com sucesso! Pressione ENTER para continuar...");
                         Console.WriteLine($"Saldo atual: {conta.saldo.ToString("F2")}");
                         Console.ReadLine();
@@ -116,7 +118,26 @@ namespace ContaCorrentePOO
             }
             Console.WriteLine("\nNúmero da conta não existe! Pressione ENTER para continuar...");
             Console.ReadLine();
+            return false;
+        }
 
+        static bool DepositoRealizado(List<ContaCorrente> listaContas, double valor)
+        {
+            int numeroConta = EscolherNumeroConta();
+            foreach (ContaCorrente conta in listaContas)
+            {
+                if (numeroConta == conta.numero)
+                {
+                    valor = DefinirValor();
+                    conta.Depositar(valor, conta);
+                    Console.WriteLine($"\nDepósito no valor de R$ {valor.ToString("F2")} realizado com sucesso! Pressione ENTER para continuar...");
+                    Console.WriteLine($"Saldo atual: {conta.saldo.ToString("F2")}");
+                    Console.ReadLine();
+                    return true;
+                }
+            }
+            Console.WriteLine("\nNúmero da conta não existe! Pressione ENTER para continuar...");
+            Console.ReadLine();
             return false;
         }
     }

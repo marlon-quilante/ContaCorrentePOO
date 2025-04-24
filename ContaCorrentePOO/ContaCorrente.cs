@@ -8,7 +8,7 @@
         public string[] registroMovimentacoes = new string[50];
         public int qtdMovimentacoes = 0;
 
-        public void Saque(double valor, ContaCorrente conta)
+        public void Sacar(double valor, ContaCorrente conta)
         {
             saldo -= valor;
             conta.registroMovimentacoes[qtdMovimentacoes] = $"Saque na conta de número {conta.numero}: R$ {valor.ToString("F")} | {DateTime.Now}";
@@ -23,14 +23,14 @@
                 return false;
         }
 
-        public void Deposito(double valor, ContaCorrente conta)
+        public void Depositar(double valor, ContaCorrente conta)
         {
             conta.saldo += valor;
             conta.registroMovimentacoes[qtdMovimentacoes] = $"Depósito na {conta}: R$ {valor.ToString("F")} | {DateTime.Now}";
             conta.qtdMovimentacoes++;
         }
 
-        public string ConsultaSaldo(ContaCorrente conta)
+        public string ConsultarSaldo(ContaCorrente conta)
         {
             return $"Saldo atual: {conta.saldo}";
         }
