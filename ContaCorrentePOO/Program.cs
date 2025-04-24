@@ -1,17 +1,17 @@
-﻿using System.Drawing;
-
-namespace ContaCorrentePOO
+﻿namespace ContaCorrentePOO
 {
     internal class Program
     {
         static void Main(string[] args)
         {
             List<ContaCorrente> listaContas = new List<ContaCorrente>();
+            ContaCorrente conta = new ContaCorrente();
             bool acessoEmAndamento = true;
 
             while (acessoEmAndamento)
             {
                 double valor = 0;
+                int numeroConta = 0;
 
                 ApresentarCabecalhoInicial();
                 ApresentarMenuOpcoes();
@@ -23,19 +23,32 @@ namespace ContaCorrentePOO
                         CriarConta(listaContas);
                         break;
                     case 2:
-                        RealizarSaque(listaContas, valor);
+                        numeroConta = EscolherNumeroConta();
+                        valor = DefinirValor();
+                        conta.RealizarSaque(listaContas, valor, numeroConta);
+                        ApresentarMensagemRetorno(conta);
                         break;
                     case 3:
-                        RealizarDeposito(listaContas, valor);
+                        numeroConta = EscolherNumeroConta();
+                        valor = DefinirValor();
+                        conta.RealizarDeposito(listaContas, valor, numeroConta);
+                        ApresentarMensagemRetorno(conta);
                         break;
                     case 4:
-                        ConsultarSaldo(listaContas);
+                        numeroConta = EscolherNumeroConta();
+                        conta.ConsultarSaldo(listaContas, numeroConta);
+                        ApresentarMensagemRetorno(conta);
                         break;
                     case 5:
-                        EmitirExtrato(listaContas);
+                        numeroConta = EscolherNumeroConta();
+                        EmitirExtrato(listaContas, numeroConta);
                         break;
                     case 6:
-                        RealizarTransferencia(listaContas, valor);
+                        int numeroContaOrigem = EscolherNumeroConta();
+                        int numeroContaDestino = EscolherNumeroContaDestino();
+                        valor = DefinirValor();
+                        conta.RealizarTransferencia(listaContas, valor, numeroContaOrigem, numeroContaDestino);
+                        ApresentarMensagemRetorno(conta);
                         break;
                     case 7:
                         acessoEmAndamento = false;
@@ -104,73 +117,9 @@ namespace ContaCorrentePOO
             return int.Parse(Console.ReadLine());
         }
 
-        static void RealizarSaque(List<ContaCorrente> listaContas, double valor)
+        static void EmitirExtrato(List<ContaCorrente> listaContas, int numeroConta)
         {
-            int numeroConta = EscolherNumeroConta();
-            foreach (ContaCorrente conta in listaContas)
-            {
-                if (numeroConta == conta.numero)
-                {
-                    valor = DefinirValor();
-                    if (conta.SaquePermitido(valor))
-                    {
-                        conta.Sacar(valor, conta);
-                        Console.WriteLine($"\nSaque no valor de R$ {valor.ToString("F2")} realizado com sucesso! Pressione ENTER para continuar...");
-                        Console.ReadLine();
-                        return;
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nValor do saque não é permitido! Pressione ENTER para continuar...");
-                        Console.ReadLine();
-                        return;
-                    }
-                }
-            }
-            Console.WriteLine("\nNúmero da conta não existe! Pressione ENTER para continuar...");
-            Console.ReadLine();
-        }
-
-        static void RealizarDeposito(List<ContaCorrente> listaContas, double valor)
-        {
-            int numeroConta = EscolherNumeroConta();
-            foreach (ContaCorrente conta in listaContas)
-            {
-                if (numeroConta == conta.numero)
-                {
-                    valor = DefinirValor();
-                    conta.Depositar(valor, conta);
-                    Console.WriteLine($"\nDepósito no valor de R$ {valor.ToString("F2")} realizado com sucesso! Pressione ENTER para continuar...");
-                    Console.ReadLine();
-                    return;
-                }
-            }
-            Console.WriteLine("\nNúmero da conta não existe! Pressione ENTER para continuar...");
-            Console.ReadLine();
-        }
-
-        static void ConsultarSaldo(List<ContaCorrente> listaContas)
-        {
-            int numeroConta = EscolherNumeroConta();
-            foreach (ContaCorrente conta in listaContas)
-            {
-                if (numeroConta == conta.numero)
-                {
-                    Console.WriteLine($"\nSaldo da conta: R$ {conta.saldo.ToString("F2")}");
-                    Console.WriteLine("\nPressione ENTER para continuar...");
-                    Console.ReadLine();
-                    return;
-                }
-            }
-            Console.WriteLine("\nNúmero da conta não existe! Pressione ENTER para continuar...");
-            Console.ReadLine();
-        }
-
-        static void EmitirExtrato(List<ContaCorrente> listaContas)
-        {
-            int numeroConta = EscolherNumeroConta();
             Console.WriteLine();
-
             foreach (ContaCorrente conta in listaContas)
             {
                 if (numeroConta == conta.numero)
@@ -191,40 +140,9 @@ namespace ContaCorrentePOO
             Console.ReadLine();
         }
 
-        static void RealizarTransferencia(List<ContaCorrente> listaContas, double valor)
+        static void ApresentarMensagemRetorno(ContaCorrente conta)
         {
-            int numeroContaOrigem = EscolherNumeroConta();
-
-            foreach (ContaCorrente contaOrigem in listaContas)
-            {
-                if (numeroContaOrigem == contaOrigem.numero)
-                {
-                    int numeroContaDestino = EscolherNumeroContaDestino();
-
-                    foreach (ContaCorrente contaDestino in listaContas)
-                    {
-                        if (numeroContaDestino == contaDestino.numero && numeroContaDestino != numeroContaOrigem)
-                        {
-                            valor = DefinirValor();
-
-                            if (contaOrigem.TransferenciaPermitida(valor))
-                            {
-                                contaOrigem.Transferir(contaOrigem, contaDestino, valor);
-                                Console.WriteLine($"\nTransferência no valor de R$ {valor.ToString("F2")} realizada com sucesso! Pressione ENTER para continuar...");
-                                Console.ReadLine();
-                                return;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\nValor da transferência não é permitida! Pressione ENTER para continuar...");
-                                Console.ReadLine();
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-            Console.WriteLine("\nNúmero da conta não existe! Pressione ENTER para continuar...");
+            Console.WriteLine(conta.mensagemRetorno);
             Console.ReadLine();
         }
     }
