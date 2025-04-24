@@ -11,34 +11,34 @@
         public void Saque(double valor, ContaCorrente conta)
         {
             saldo -= valor;
-            registroMovimentacoes[qtdMovimentacoes] = $"Saque na {conta}: R$ {valor.ToString("F")} | {DateTime.Now}";
-            qtdMovimentacoes++;
+            conta.registroMovimentacoes[qtdMovimentacoes] = $"Saque na conta de número {conta.numero}: R$ {valor.ToString("F")} | {DateTime.Now}";
+            conta.qtdMovimentacoes++;
         }
 
         public bool SaquePermitido(double valor)
         {
-            if (valor <= saldo + limiteDebito)
+            if ((valor <= (saldo + limiteDebito)) && (valor >= 0))
                 return true;
             else
-            return false;
+                return false;
         }
 
         public void Deposito(double valor, ContaCorrente conta)
         {
-            saldo += valor;
-            registroMovimentacoes[qtdMovimentacoes] = $"Depósito na {conta}: R$ {valor.ToString("F")} | {DateTime.Now}";
-            qtdMovimentacoes++;
-        }
-
-        public string ConsultaSaldo()
-        {
-            return $"Saldo atual: {saldo}";
-        }
-
-        public void TransferirPara(double valor, ContaCorrente conta)
-        {
-            saldo -= valor;
             conta.saldo += valor;
+            conta.registroMovimentacoes[qtdMovimentacoes] = $"Depósito na {conta}: R$ {valor.ToString("F")} | {DateTime.Now}";
+            conta.qtdMovimentacoes++;
+        }
+
+        public string ConsultaSaldo(ContaCorrente conta)
+        {
+            return $"Saldo atual: {conta.saldo}";
+        }
+
+        public void TransferirPara(ContaCorrente contaOrigem, ContaCorrente contaDestino, double valor)
+        {
+            contaOrigem.saldo -= valor;
+            contaDestino.saldo += valor;
         }
 
         public bool TransferenciaPermitida(double valor)
