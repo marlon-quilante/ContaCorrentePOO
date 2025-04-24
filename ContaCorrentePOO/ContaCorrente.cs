@@ -10,8 +10,10 @@
 
         public void Sacar(double valor, ContaCorrente conta)
         {
-            saldo -= valor;
-            conta.registroMovimentacoes[qtdMovimentacoes] = $"Saque na conta de número {conta.numero}: R$ {valor.ToString("F")} | {DateTime.Now}";
+            conta.saldo -= valor;
+            
+            conta.registroMovimentacoes[qtdMovimentacoes] = $"Operação: Saque | Valor: R$ {valor.ToString("F")} " +
+                $"| Saldo: {conta.saldo.ToString("F2")} | Data: {DateTime.Now}";
             conta.qtdMovimentacoes++;
         }
 
@@ -26,19 +28,25 @@
         public void Depositar(double valor, ContaCorrente conta)
         {
             conta.saldo += valor;
-            conta.registroMovimentacoes[qtdMovimentacoes] = $"Depósito na {conta}: R$ {valor.ToString("F")} | {DateTime.Now}";
+            
+            conta.registroMovimentacoes[qtdMovimentacoes] = $"Operação: Depósito | Valor: R$ {valor.ToString("F")} " +
+                $"| Saldo: {conta.saldo.ToString("F2")} | Data: {DateTime.Now}";
             conta.qtdMovimentacoes++;
         }
 
-        public string ConsultarSaldo(ContaCorrente conta)
-        {
-            return $"Saldo atual: {conta.saldo}";
-        }
-
-        public void TransferirPara(ContaCorrente contaOrigem, ContaCorrente contaDestino, double valor)
+        public void Transferir(ContaCorrente contaOrigem, ContaCorrente contaDestino, double valor)
         {
             contaOrigem.saldo -= valor;
             contaDestino.saldo += valor;
+
+            contaOrigem.registroMovimentacoes[qtdMovimentacoes] = $"Operação: Transferência enviada | Valor: R$ {valor.ToString("F")} " +
+                $"| Saldo: {contaOrigem.saldo.ToString("F2")} | Data: {DateTime.Now}";
+
+            contaDestino.registroMovimentacoes[qtdMovimentacoes] = $"Operação: Transferência recebida | Valor: R$ {valor.ToString("F")} " +
+                $"| Saldo: {contaDestino.saldo.ToString("F2")} | Data: {DateTime.Now}";
+
+            contaOrigem.qtdMovimentacoes++;
+            contaDestino.qtdMovimentacoes++;
         }
 
         public bool TransferenciaPermitida(double valor)
