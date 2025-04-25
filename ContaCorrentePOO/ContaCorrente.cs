@@ -1,6 +1,6 @@
 ﻿namespace ContaCorrentePOO
 {
-    internal class ContaCorrente
+    public class ContaCorrente
     {
         public int numero = 0;
         public double saldo = 0.0F;
@@ -34,8 +34,7 @@
                     if (conta.SaquePermitido(valor))
                     {
                         conta.saldo -= valor;
-                        AtualizarRegistroMovimentacoes(conta, $"Operação: Saque | Valor: R$ {valor.ToString("F")} " +
-                            $"| Saldo: {conta.saldo.ToString("F2")} | Data: {DateTime.Now}");
+                        AtualizarRegistroMovimentacoes(conta, valor, "Saque", DateTime.Now);
                         IncrementarQtdMovimentacoes(conta);
                         mensagemRetorno = $"\nSaque no valor de R$ {valor.ToString("F2")} realizado com sucesso! Pressione ENTER para continuar...";
                         return;
@@ -57,10 +56,9 @@
                 if (numeroConta == conta.numero)
                 {
                     conta.saldo += valor;
-                    AtualizarRegistroMovimentacoes(conta, $"Operação: Depósito | Valor: R$ {valor.ToString("F")} " +
-                        $"| Saldo: {conta.saldo.ToString("F2")} | Data: {DateTime.Now}");
-                    mensagemRetorno = $"\nDepósito no valor de R$ {valor.ToString("F2")} realizado com sucesso! Pressione ENTER para continuar...";
+                    AtualizarRegistroMovimentacoes(conta, valor, "Depósito", DateTime.Now);
                     IncrementarQtdMovimentacoes(conta);
+                    mensagemRetorno = $"\nDepósito no valor de R$ {valor.ToString("F2")} realizado com sucesso! Pressione ENTER para continuar...";
                     return;
                 }
             }
@@ -94,10 +92,8 @@
                             {
                                 contaOrigem.saldo -= valor;
                                 contaDestino.saldo += valor;
-                                AtualizarRegistroMovimentacoes(contaOrigem, $"Operação: Transferência enviada | Valor: R$ {valor.ToString("F")} " +
-                                    $"| Saldo: {contaOrigem.saldo.ToString("F2")} | Data: {DateTime.Now}");
-                                AtualizarRegistroMovimentacoes(contaDestino, $"Operação: Transferência recebida | Valor: R$ {valor.ToString("F")} " +
-                                    $"| Saldo: {contaDestino.saldo.ToString("F2")} | Data: {DateTime.Now}");
+                                AtualizarRegistroMovimentacoes(contaOrigem, valor, "Transferência enviada", DateTime.Now);
+                                AtualizarRegistroMovimentacoes(contaDestino, valor, "Transferência recebida", DateTime.Now);
                                 IncrementarQtdMovimentacoes(contaOrigem);
                                 IncrementarQtdMovimentacoes(contaDestino);
                                 mensagemRetorno = $"\nTransferência no valor de R$ {valor.ToString("F2")} realizada com sucesso! Pressione ENTER para continuar...";
@@ -115,9 +111,14 @@
             mensagemRetorno = "\nNúmero da conta não existe! Pressione ENTER para continuar...";
         }
 
-        public void AtualizarRegistroMovimentacoes(ContaCorrente conta, string registro)
+        public void AtualizarRegistroMovimentacoes(ContaCorrente conta, double valor, string tipo, DateTime dataHora)
         {
-            conta.registroMovimentacoes[conta.qtdMovimentacoes] = registro;
+            Movimentacao novaMovimentacao = new Movimentacao();
+            novaMovimentacao.valor = valor;
+            novaMovimentacao.tipo = tipo;
+            novaMovimentacao.dataHora = dataHora;
+
+            conta.registroMovimentacoes[conta.qtdMovimentacoes] = novaMovimentacao.RegistroMovimentacao(conta);
         }
 
         public void IncrementarQtdMovimentacoes(ContaCorrente conta)

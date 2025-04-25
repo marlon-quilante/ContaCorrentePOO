@@ -6,6 +6,10 @@
         {
             List<ContaCorrente> listaContas = new List<ContaCorrente>();
             ContaCorrente conta = new ContaCorrente();
+
+            listaContas.Add(new ContaCorrente { numero = 123, limiteDebito = 50, saldo = 100 });
+            listaContas.Add(new ContaCorrente { numero = 456, limiteDebito = 50, saldo = 200 });
+
             bool acessoEmAndamento = true;
 
             while (acessoEmAndamento)
@@ -126,9 +130,11 @@
                 {
                     for (int i = 0; i < conta.registroMovimentacoes.Length; i++)
                     {
+                        string movimentacaoAtual = conta.registroMovimentacoes[i];
+
                         if (conta.registroMovimentacoes[i] != null)
                         {
-                            Console.WriteLine(conta.registroMovimentacoes[i]);
+                            Console.WriteLine(movimentacaoAtual);
                         }
                     }
                     Console.WriteLine("\nPressione ENTER para continuar...");
